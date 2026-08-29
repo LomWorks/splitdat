@@ -1,41 +1,65 @@
-rules_version='2'
+rules_version = '2';
 
 service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2026, 9, 28);
-    }
-  }
+match /databases/{database}/documents {
+function signedIn() {
+return request.auth != null;
 }
 
+match /tabs/{tabId} {
+allow read: if signedIn();
 
+allow create: if signedIn()
+&& request.resource.data.keys().hasOnly([
+'hostName',
+'tabName',
+'status',
+'createdAt'
+])
+&& request.resource.data.hostName is string
+&& request.resource.data.hostName.size() > 0
+&& request.resource.data.hostName.size() <= 80
+&& request.resource.data.tabName is string
+&& request.resource.data.tabName.size() > 0
+&& request.resource.data.tabName.size() <= 160
+&& request.resource.data.status == 'open';
 
+allow update: if signedIn()
+&& request.resource.data.diff(resource.data).affectedKeys()
+.hasOnly(['status'])
+&& request.resource.data.status in ['open', 'settled'];
 
+allow delete: if false;
 
+match /items/{itemId} {
+allow read: if signedIn();
 
+allow create: if signedIn()
+&& request.resource.data.keys().hasOnly([
+'name',
+'price',
+'claimedBy',
+'position'
+])
+&& request.resource.data.name is string
+&& request.resource.data.name.size() > 0
+&& request.resource.data.name.size() <= 160
+&& request.resource.data.price is number
+&& request.resource.data.price > 0
+&& request.resource.data.price <= 100000
+&& request.resource.data.claimedBy is list
+&& request.resource.data.claimedBy.size() == 0
+&& request.resource.data.position is int
+&& request.resource.data.position >= 0;
 
+allow update: if signedIn()
+&& request.resource.data.diff(resource.data).affectedKeys()
+.hasOnly(['claimedBy'])
+&& request.resource.data.claimedBy is list
+&& request.resource.data.claimedBy.size() <= 50;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+allow delete: if false;
+}
+}
+}
+}
