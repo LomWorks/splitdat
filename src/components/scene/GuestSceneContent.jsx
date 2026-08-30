@@ -13,14 +13,16 @@ export default function GuestSceneContent() {
   const groupRef = useRef();
   const scrollProgress = useScrollProgressRef();
 
-  const cards = useMemo(
-    () => [
-      { position: [-2.2, 0.4, -2], tilt: 0.3 },
-      { position: [2.4, -0.6, -3], tilt: -0.4, scale: 0.85 },
-      { position: [0.4, 1.2, -4], tilt: 0.15, scale: 1.1 },
-    ],
-    [],
-  );
+const cards = useMemo(
+  () => [
+    { position: [-3, 0.8, -2], tilt: 0.3 },
+    { position: [3, -1, -3], tilt: -0.4, scale: 0.9 },
+    { position: [0.6, 1.6, -4], tilt: 0.15, scale: 1.2 },
+    { position: [-1.8, -1.4, -3.5], tilt: -0.2, scale: 0.8 },
+    { position: [2, 1.8, -5], tilt: 0.35, scale: 1 },
+  ],
+  [],
+);
 
   useFrame((_, delta) => {
     if (!groupRef.current) return;
@@ -43,7 +45,7 @@ export default function GuestSceneContent() {
             speed={1.2}
             rotationIntensity={0.4}
             floatIntensity={0.6}
-            floatingRange={[-0.15, 0.15]}
+            floatingRange={[-0.3, 0.3]}
           >
             <InteractiveCard {...card} />
           </Float>

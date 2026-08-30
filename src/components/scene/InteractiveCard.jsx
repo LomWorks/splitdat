@@ -48,7 +48,7 @@ export default function InteractiveCard({ position, tilt = 0, scale = 1 }) {
         setFlipped((current) => !current);
       }}
     >
-      <planeGeometry args={[1.2, 2]} />
+      <planeGeometry args={[1.6, 2.6]} />
       <meshStandardMaterial
         color={hovered ? ACCENT_COLOR : PAPER_COLOR}
         roughness={0.9}

@@ -1,14 +1,37 @@
+/* =========================
+   GUEST SCREEN
+   ========================= */
+
 .guest-screen-premium {
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
   padding: 2rem 1.5rem 8rem;
+
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
+/* Keep all guest content inside its parent */
+.guest-screen-premium *,
+.guest-screen-premium *::before,
+.guest-screen-premium *::after {
+  box-sizing: border-box;
+}
+
+
+/* =========================
+   HEADER
+   ========================= */
+
 .guest-header {
+  width: 100%;
+  min-width: 0;
+
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -17,6 +40,7 @@
 
 .guest-hero {
   flex: 1;
+  min-width: 0;
 }
 
 .guest-hero .eyebrow {
@@ -24,21 +48,34 @@
 }
 
 .guest-hero h1 {
-  margin: 0.5rem 0 0.5rem;
+  margin: 0.5rem 0;
   font-size: 1.75rem;
+  overflow-wrap: break-word;
 }
 
 .guest-hero p {
   color: var(--text-secondary);
   font-size: 0.95rem;
   line-height: 1.5;
+  overflow-wrap: break-word;
 }
 
+
+/* =========================
+   NAME CARD
+   ========================= */
+
 .name-card-premium {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   margin-top: 2rem;
+  overflow: hidden;
 }
 
 .name-card-content {
+  width: 100%;
+  min-width: 0;
   text-align: left;
 }
 
@@ -50,15 +87,24 @@
 }
 
 .name-input-premium {
+  display: block;
+
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   padding: 0.875rem;
   font-size: 1rem;
+
   border: 2px solid var(--border-strong);
   border-radius: 8px;
+
   background: var(--butter-50);
   color: var(--text-primary);
+
   font-family: inherit;
   margin-bottom: 0.75rem;
+
   transition: all var(--duration-base) var(--easing-in-out);
 }
 
@@ -73,18 +119,93 @@
   font-size: 0.875rem;
   color: var(--text-tertiary);
   margin: 0;
+  overflow-wrap: break-word;
 }
 
-/* Receipt-style items list */
+
+/* =========================
+   SHARE / QR CARD
+   ========================= */
+
+.guest-share-card {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.guest-share-content {
+  width: 100%;
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1.5rem;
+}
+
+.guest-share-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.guest-share-copy h3 {
+  margin: 0 0 0.35rem;
+  color: var(--text-primary);
+  font-size: 1rem;
+  overflow-wrap: break-word;
+}
+
+.guest-share-copy p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+}
+
+.guest-share-content > * {
+  min-width: 0;
+}
+
+/* Prevent QR from overflowing its card */
+.guest-share-content canvas,
+.guest-share-content svg,
+.guest-share-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+
+/* =========================
+   RECEIPT ITEMS
+   ========================= */
+
 .claim-items-receipt {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  background: linear-gradient(to bottom, var(--butter-50), var(--butter-100));
+
+  background: linear-gradient(
+    to bottom,
+    var(--butter-50),
+    var(--butter-100)
+  );
+
   border: 1px dashed var(--ink-650);
   border-radius: 4px;
+
   padding: 1.5rem;
+
   position: relative;
+
+  overflow: hidden;
 }
 
 .claim-items-receipt::before,
@@ -94,6 +215,7 @@
   left: 0;
   width: 100%;
   height: 12px;
+
   background: repeating-linear-gradient(
     90deg,
     transparent 0px,
@@ -111,17 +233,31 @@
   bottom: -18px;
 }
 
-/* Claim item row */
+
+/* =========================
+   CLAIM ITEM ROW
+   ========================= */
+
 .claim-item-row {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   display: flex;
   align-items: stretch;
+
   gap: 1rem;
   padding: 1rem;
+
   background: white;
   border-radius: 8px;
   border: 1px solid var(--border);
+
   transition: all var(--duration-base) var(--easing-in-out);
+
   cursor: pointer;
+
+  overflow: hidden;
 }
 
 .claim-item-row:hover {
@@ -130,7 +266,12 @@
 }
 
 .claim-item-row.claimed {
-  background: linear-gradient(135deg, var(--butter-50), var(--butter-100));
+  background: linear-gradient(
+    135deg,
+    var(--butter-50),
+    var(--butter-100)
+  );
+
   border-color: var(--blue-500);
 }
 
@@ -139,66 +280,135 @@
   cursor: default;
 }
 
+
+/* =========================
+   CLAIM ITEM CONTENT
+   ========================= */
+
 .claim-item-main {
   flex: 1;
+  min-width: 0;
+
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+
+  overflow: hidden;
 }
 
 .claim-item-name-price {
+  width: 100%;
+  min-width: 0;
+
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+
   gap: 1rem;
 }
 
 .claim-item-name {
+  min-width: 0;
+  flex: 1;
+
   font-size: 1rem;
   margin: 0;
+
   color: var(--text-primary);
-  flex: 1;
+
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
+/* Prevent price from pushing item name outside */
+.claim-item-name-price > * {
+  min-width: 0;
+}
+
+
+/* =========================
+   CLAIMANTS
+   ========================= */
+
 .claim-item-claimants {
+  width: 100%;
+  min-width: 0;
+
   display: flex;
   align-items: center;
+
   gap: 0.5rem;
+
   font-size: 0.8rem;
   color: var(--text-secondary);
+
+  overflow-wrap: anywhere;
 }
 
 .claimant-count {
+  min-width: 0;
+
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+
+/* =========================
+   YOUR SHARE
+   ========================= */
+
 .your-share {
+  width: 100%;
+  min-width: 0;
+
   display: flex;
   align-items: center;
+
   gap: 0.5rem;
+
   padding: 0.5rem 0;
+
   border-top: 1px solid var(--border);
+
   font-size: 0.9rem;
   color: var(--blue-600);
+
+  overflow-wrap: anywhere;
 }
 
 .your-share-label {
   font-weight: 500;
+  min-width: 0;
 }
 
-/* Claim button */
+
+/* =========================
+   CLAIM BUTTON
+   ========================= */
+
 .claim-button {
   flex-shrink: 0;
+
   width: 44px;
+  min-width: 44px;
+
   height: 44px;
+  min-height: 44px;
+
   border-radius: 8px;
   border: 2px solid var(--border-strong);
+
   background: white;
   color: var(--text-primary);
+
   font-size: 1.25rem;
   font-weight: 700;
+
   cursor: pointer;
+
   transition: all var(--duration-fast) var(--easing-in-out);
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -220,55 +430,94 @@
   cursor: not-allowed;
 }
 
-/* Your bill dock (sticky footer) */
+
+/* =========================
+   YOUR BILL DOCK
+   ========================= */
+
 .your-bill-dock {
   position: fixed;
+
   bottom: 0;
   left: 0;
   right: 0;
+
+  width: 100%;
+
   background: var(--surface-overlay);
+
   border-top: 1px solid var(--border);
+
   padding: 1.5rem;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 1rem;
+
   backdrop-filter: blur(8px);
+
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+
   z-index: 100;
+
+  box-sizing: border-box;
 }
 
 .dock-content {
   flex: 1;
+  min-width: 0;
   text-align: left;
 }
 
 .dock-label {
   font-size: 0.8rem;
   color: var(--text-tertiary);
+
   text-transform: uppercase;
   letter-spacing: 0.05em;
+
   font-weight: 600;
+
   margin-bottom: 0.25rem;
+
+  overflow-wrap: break-word;
 }
 
 .dock-button {
   flex-shrink: 0;
   min-width: 140px;
+  max-width: 100%;
 }
+
+
+/* =========================
+   NAME SUBMIT
+   ========================= */
 
 .name-submit-button {
   width: 100%;
+  max-width: 100%;
+
   padding: 0.875rem;
+
   font-size: 1rem;
   font-weight: 600;
+
   border: none;
   border-radius: 8px;
+
   background: var(--blue-600);
   color: white;
+
   cursor: pointer;
+
   margin-bottom: 0.75rem;
+
   transition: all var(--duration-base) var(--easing-in-out);
+
+  overflow: hidden;
 }
 
 .name-submit-button:hover:not(:disabled) {
@@ -280,6 +529,11 @@
   cursor: not-allowed;
 }
 
+
+/* =========================
+   MOBILE
+   ========================= */
+
 @media (max-width: 640px) {
   .guest-screen-premium {
     padding: 1rem 1rem 8rem;
@@ -288,10 +542,29 @@
 
   .guest-header {
     flex-direction: column;
+    gap: 0.75rem;
   }
 
   .guest-hero h1 {
     font-size: 1.5rem;
+  }
+
+  /* QR card stacks cleanly on mobile */
+  .guest-share-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .guest-share-copy {
+    width: 100%;
+  }
+
+  .guest-share-content canvas,
+  .guest-share-content svg,
+  .guest-share-content img {
+    max-width: 100%;
   }
 
   .claim-items-receipt {
@@ -304,28 +577,89 @@
     gap: 0.75rem;
   }
 
+  /*
+   * Prevent long names/prices from
+   * fighting for horizontal space.
+   */
   .claim-item-name-price {
     flex-direction: column;
     align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .claim-item-name {
+    width: 100%;
+  }
+
+  .claim-item-claimants {
+    flex-wrap: wrap;
+  }
+
+  .your-share {
+    flex-wrap: wrap;
   }
 
   .your-bill-dock {
     flex-direction: column;
+    align-items: stretch;
+
     gap: 0.75rem;
     padding: 1rem;
   }
 
+  .dock-content {
+    width: 100%;
+  }
+
   .dock-button {
     width: 100%;
-    min-width: unset;
+    min-width: 0;
+    max-width: 100%;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .claim-item-row {
-    animation: none;
+
+/* =========================
+   VERY SMALL SCREENS
+   ========================= */
+
+@media (max-width: 380px) {
+  .guest-screen-premium {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
   }
 
+  .guest-share-card {
+    width: 100%;
+  }
+
+  .claim-items-receipt {
+    padding: 0.75rem;
+  }
+
+  .claim-item-row {
+    padding: 0.7rem;
+    gap: 0.6rem;
+  }
+
+  .claim-button {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+  }
+
+  .claim-item-name {
+    font-size: 0.95rem;
+  }
+}
+
+
+/* =========================
+   REDUCED MOTION
+   ========================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .claim-item-row,
   .claim-button {
     transition: none;
   }
