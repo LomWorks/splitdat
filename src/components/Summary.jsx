@@ -1,128 +1,200 @@
+import { motion } from "motion/react";
+import { getPeopleTotals, getTabTotal, getClaimedTotal, getUnclaimedTotal } from "../utils/compute.js";
+import { setTabStatus } from "../services/tabs.js";
 import {
-getClaimedTotal,
-getPeopleTotals,
-getTabTotal,
-getUnclaimedTotal,
-} from "../utils/compute.js";
-
-const currency = new Intl.NumberFormat("en-US", {
-style: "currency",
-currency: "USD",
-});
+  Button,
+  Card,
+  Money,
+  ProgressRing,
+  AvatarStack,
+} from "./ui/index.js";
+import "../styles/Summary.css";
+import { useState } from "react";
 
 export default function Summary({
-tab,
-guestName,
-onBackToGuest,
-onSettle,
+  tab,
+  guestName,
+  onBackToGuest,
+  onSettle,
 }) {
-const total = getTabTotal(tab.items);
-const claimedTotal = getClaimedTotal(tab.items);
-const unclaimedTotal = getUnclaimedTotal(tab.items);
-const people = getPeopleTotals(tab.items);
-const isSettled = tab.status === "settled";
+  const [settling, setSettling] = useState(false);
 
-const claimedPercentage =
-total === 0 ? 0 : Math.min((claimedTotal / total) * 100, 100);
+  const totals = getPeopleTotals(tab.items);
+  const tabTotal = getTabTotal(tab.items);
+  const claimedTotal = getClaimedTotal(tab.items);
+  const unclaimedTotal = getUnclaimedTotal(tab.items);
+  const isHost = guestName === "" || guestName === tab.hostName;
+  const userTotal = totals.find((t) => t.name === guestName)?.amount ?? 0;
 
-return (
-<div className="screen summary-screen">
-<div className="tab-intro">
-<span className="eyebrow">{isSettled ? "All set" : "Live summary"}</span>
-<h1>{isSettled ? "Tab settled." : tab.tabName}</h1>
-<p>
-{isSettled
-? "Everyone’s share is saved below."
-: "Every claim updates the split for the whole group."}
-</p>
-</div>
+  async function handleSettle() {
+    try {
+      setSettling(true);
+      await onSettle();
+    } finally {
+      setSettling(false);
+    }
+  }
 
-<section className="total-card">
-<span>Total bill</span>
-<strong>{currency.format(total)}</strong>
+  function generateVenmoLink(name, amount) {
+    return `https://venmo.com/?txn=pay&audience=private&recipients=${encodeURIComponent(name)}&amount=${amount.toFixed(2)}&note=Payment for ${encodeURIComponent(tab.tabName)}`;
+  }
 
-<div className="total-progress" aria-label={`${claimedPercentage}% claimed`}>
-<span style={{ width: `${claimedPercentage}%` }} />
-</div>
+  return (
+    <div className="summary-screen-premium">
+      {/* Header */}
+      <div className="summary-hero">
+        <div>
+          <span className="eyebrow">
+            {tab.status === "settled" ? "✓ All split" : "Almost done"}
+          </span>
+          <h1>{tab.tabName}</h1>
+          <p>Hosted by {tab.hostName}</p>
+        </div>
 
-<div className="total-meta">
-<span>{currency.format(claimedTotal)} assigned</span>
-<span>{currency.format(unclaimedTotal)} remaining</span>
-</div>
-</section>
+        {tab.status === "settled" && (
+          <div className="settled-badge">
+            <span>✓</span>
+            All settled
+          </div>
+        )}
+      </div>
 
-<section className="summary-section">
-<div className="section-heading">
-<div>
-<span className="label">Who owes what</span>
-<p>Shared items are split evenly.</p>
-</div>
-<span className="item-count">{people.length} people</span>
-</div>
+      {/* Total & Progress */}
+      <Card elevated className="total-card-premium">
+        <div className="total-breakdown">
+          <div className="progress-section">
+            <ProgressRing
+              total={tabTotal}
+              claimed={claimedTotal}
+              unclaimed={unclaimedTotal}
+              size="lg"
+            />
+          </div>
 
-{people.length > 0 ? (
-<div className="people-list">
-{people.map((person) => {
-const isYou = person.name === guestName.trim();
+          <div className="breakdown-section">
+            <div className="breakdown-row">
+              <span className="breakdown-label">Total bill</span>
+              <Money amount={tabTotal} size="lg" highlight />
+            </div>
 
-return (
-<div className={`person-row ${isYou ? "is-you" : ""}`} key={person.name}>
-<span className="person-avatar">
-{person.name.slice(0, 1).toUpperCase()}
-</span>
+            <div className="breakdown-row">
+              <span className="breakdown-label">Assigned</span>
+              <Money amount={claimedTotal} size="md" />
+            </div>
 
-<span className="person-name">
-{person.name}
-{isYou && <small>You</small>}
-</span>
+            {unclaimedTotal > 0 && (
+              <div className="breakdown-row breakdown-row--warning">
+                <span className="breakdown-label">Unclaimed</span>
+                <Money amount={unclaimedTotal} size="md" />
+              </div>
+            )}
+          </div>
+        </div>
+      </Card>
 
-<strong>{currency.format(person.amount)}</strong>
-</div>
-);
-})}
-</div>
-) : (
-<div className="empty-items">No items have been claimed yet.</div>
-)}
-</section>
+      {/* Unclaimed warning */}
+      {unclaimedTotal > 0 && (
+        <motion.div
+          className="unclaimed-notice"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <span className="notice-icon">⚠</span>
+          <div className="notice-content">
+            <h3>Items not claimed yet</h3>
+            <p>
+              <Money amount={unclaimedTotal} size="sm" /> worth of items haven't been claimed.
+              Someone might have forgotten!
+            </p>
+          </div>
+        </motion.div>
+      )}
 
-{!isSettled && unclaimedTotal > 0 && (
-<div className="notice-card">
-<span className="notice-dot" />
-<p>
-{currency.format(unclaimedTotal)} is still unclaimed. Ask the group
-to review the remaining items.
-</p>
-</div>
-)}
+      {/* Per-person balances */}
+      <div className="balances-section">
+        <h2>Who pays what</h2>
 
-<section className="card payment-card">
-<div>
-<span className="label">Ready when you are</span>
-<h2>Settle up in one tap.</h2>
-<p>Payment links are mocked for this demo.</p>
-</div>
+        <div className="balance-cards">
+          {totals.length === 0 ? (
+            <p className="empty-state">No items claimed yet. Everyone claim what they ordered!</p>
+          ) : (
+            totals.map((balance, index) => {
+              const isCurrentUser = balance.name === guestName;
+              return (
+                <motion.div
+                  key={balance.name}
+                  className={`balance-card ${isCurrentUser ? "current-user" : ""}`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  <div className="balance-card-content">
+                    <div className="balance-header">
+                      <div className="balance-name">
+                        <span className="name">{balance.name}</span>
+                        {isCurrentUser && <span className="you-badge">You</span>}
+                      </div>
+                      <Money amount={balance.amount} size="lg" highlight />
+                    </div>
 
-<button className="secondary-button" type="button">
-Pay with Venmo <span aria-hidden="true">↗</span>
-</button>
-</section>
+                    {tab.status !== "settled" && !isHost && isCurrentUser && (
+                      <a
+                        href={generateVenmoLink(tab.hostName, balance.amount)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="pay-link"
+                      >
+                        <Button
+                          variant="success"
+                          size="sm"
+                          className="pay-button"
+                        >
+                          Pay on Venmo →
+                        </Button>
+                      </a>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })
+          )}
+        </div>
+      </div>
 
-<div className="summary-actions">
-<button
-className="secondary-button"
-type="button"
-onClick={onBackToGuest}
->
-Back to claims
-</button>
+      {/* Host actions */}
+      {isHost && tab.status === "open" && (
+        <div className="host-actions">
+          <Button
+            onClick={handleSettle}
+            loading={settling}
+            variant="primary"
+            className="settle-button"
+          >
+            Mark as settled
+          </Button>
+        </div>
+      )}
 
-{!isSettled && (
-<button className="primary-button" type="button" onClick={onSettle}>
-Mark as settled <span aria-hidden="true">✓</span>
-</button>
-)}
-</div>
-</div>
-);
+      {tab.status === "open" && !isHost && (
+        <Button
+          onClick={onBackToGuest}
+          variant="secondary"
+        >
+          Back to items
+        </Button>
+      )}
+
+      {tab.status === "settled" && (
+        <motion.div
+          className="settled-message"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <h2>All split. Nice work!</h2>
+          <p>Everyone paid their share. Until next time! 🎉</p>
+        </motion.div>
+      )}
+    </div>
+  );
 }

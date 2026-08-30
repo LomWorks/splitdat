@@ -1,0 +1,84 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+  transition: all var(--duration-base) var(--easing-in-out);
+}
+
+.card--default {
+  background: var(--butter-50);
+  border-color: var(--border);
+}
+
+.card--secondary {
+  background: var(--mist-100);
+  border-color: var(--mist-200);
+}
+
+.card--receipt {
+  background: linear-gradient(
+    to bottom,
+    var(--butter-50) 0%,
+    var(--butter-100) 100%
+  );
+  border: 1px dashed var(--ink-500);
+  border-radius: 4px;
+  padding: 1rem;
+  position: relative;
+}
+
+.card--receipt::before,
+.card--receipt::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 8px,
+    var(--ink-500) 8px,
+    var(--ink-500) 10px
+  );
+  background-size: 20px 100%;
+}
+
+.card--receipt::before {
+  top: -12px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 6px,
+    var(--ink-500) 6px,
+    var(--ink-500) 8px
+  );
+}
+
+.card--receipt::after {
+  bottom: -12px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 6px,
+    var(--ink-500) 6px,
+    var(--ink-500) 8px
+  );
+}
+
+.card--elevated {
+  box-shadow: var(--shadow-lift);
+  border-color: var(--border-strong);
+}
+
+.card:hover {
+  border-color: var(--border-strong);
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 1rem;
+  }
+}

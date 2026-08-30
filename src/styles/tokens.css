@@ -1,0 +1,129 @@
+:root {
+  /* Butter palette */
+  --butter-50: #fffdf3;
+  --butter-100: #fff7d7;
+  --butter-200: #f7eab8;
+  --butter-300: #ead791;
+
+  /* Ink / Dark text */
+  --ink-950: #18232f;
+  --ink-800: #2c3d4b;
+  --ink-650: #536573;
+  --ink-500: #788995;
+
+  /* Mist / Light borders */
+  --mist-100: #e8eef0;
+  --mist-200: #d4dfe3;
+
+  /* Blue-grey / Structure */
+  --blue-700: #48667c;
+  --blue-600: #5c7c93;
+  --blue-500: #7394aa;
+  --blue-300: #b9cbd4;
+
+  /* Semantic */
+  --success: #537b68;
+  --warning: #bf8e38;
+  --danger: #b55c58;
+
+  /* Composite tokens */
+  --text-primary: var(--ink-950);
+  --text-secondary: var(--ink-650);
+  --text-tertiary: var(--ink-500);
+  --bg-primary: var(--butter-50);
+  --bg-secondary: var(--butter-100);
+  --bg-tertiary: var(--mist-100);
+  
+  --surface: rgba(255, 253, 243, 0.86);
+  --surface-overlay: rgba(255, 253, 243, 0.95);
+  --border: rgba(44, 61, 75, 0.14);
+  --border-strong: rgba(44, 61, 75, 0.25);
+
+  --shadow-soft: 0 2px 8px rgba(43, 62, 77, 0.06);
+  --shadow-md: 0 4px 16px rgba(43, 62, 77, 0.1);
+  --shadow-lift: 0 12px 32px rgba(43, 62, 77, 0.12);
+  --shadow-deep: 0 20px 48px rgba(43, 62, 77, 0.16);
+
+  /* Typography */
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+  --font-mono: "Courier New", monospace;
+
+  /* Motion */
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+  --duration-slow: 500ms;
+  --easing-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --easing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+  }
+}
+
+/* Typography scale */
+body {
+  font-family: var(--font-family);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 0.5rem;
+}
+
+/* Utility classes */
+.text-muted {
+  color: var(--text-tertiary);
+}
+
+.text-success {
+  color: var(--success);
+}
+
+.text-warning {
+  color: var(--warning);
+}
+
+.text-danger {
+  color: var(--danger);
+}

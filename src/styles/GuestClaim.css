@@ -1,0 +1,309 @@
+.guest-screen-premium {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.guest-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.guest-hero {
+  flex: 1;
+}
+
+.guest-hero .eyebrow {
+  color: var(--text-tertiary);
+}
+
+.guest-hero h1 {
+  margin: 0.5rem 0 0.5rem;
+  font-size: 1.75rem;
+}
+
+.guest-hero p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.name-card-premium {
+  margin-top: 2rem;
+}
+
+.name-card-content {
+  text-align: left;
+}
+
+.name-card-label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.name-input-premium {
+  width: 100%;
+  padding: 0.875rem;
+  font-size: 1rem;
+  border: 2px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--butter-50);
+  color: var(--text-primary);
+  font-family: inherit;
+  margin-bottom: 0.75rem;
+  transition: all var(--duration-base) var(--easing-in-out);
+}
+
+.name-input-premium:focus {
+  outline: none;
+  border-color: var(--blue-600);
+  box-shadow: 0 0 0 3px rgba(92, 124, 147, 0.1);
+  background: var(--butter-100);
+}
+
+.helper-text {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+/* Receipt-style items list */
+.claim-items-receipt {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: linear-gradient(to bottom, var(--butter-50), var(--butter-100));
+  border: 1px dashed var(--ink-650);
+  border-radius: 4px;
+  padding: 1.5rem;
+  position: relative;
+}
+
+.claim-items-receipt::before,
+.claim-items-receipt::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 8px,
+    var(--ink-650) 8px,
+    var(--ink-650) 10px
+  );
+}
+
+.claim-items-receipt::before {
+  top: -18px;
+}
+
+.claim-items-receipt::after {
+  bottom: -18px;
+}
+
+/* Claim item row */
+.claim-item-row {
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  transition: all var(--duration-base) var(--easing-in-out);
+  cursor: pointer;
+}
+
+.claim-item-row:hover {
+  border-color: var(--blue-500);
+  box-shadow: var(--shadow-soft);
+}
+
+.claim-item-row.claimed {
+  background: linear-gradient(135deg, var(--butter-50), var(--butter-100));
+  border-color: var(--blue-500);
+}
+
+.claim-item-row.settled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.claim-item-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.claim-item-name-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.claim-item-name {
+  font-size: 1rem;
+  margin: 0;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.claim-item-claimants {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.claimant-count {
+  white-space: nowrap;
+}
+
+.your-share {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--blue-600);
+}
+
+.your-share-label {
+  font-weight: 500;
+}
+
+/* Claim button */
+.claim-button {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  border: 2px solid var(--border-strong);
+  background: white;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--easing-in-out);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.claim-button:hover:not(:disabled) {
+  border-color: var(--blue-500);
+  background: var(--mist-100);
+}
+
+.claim-button.active {
+  background: var(--success);
+  color: white;
+  border-color: var(--success);
+}
+
+.claim-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Your bill dock (sticky footer) */
+.your-bill-dock {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--surface-overlay);
+  border-top: 1px solid var(--border);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+  z-index: 100;
+}
+
+.dock-content {
+  flex: 1;
+  text-align: left;
+}
+
+.dock-label {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.dock-button {
+  flex-shrink: 0;
+  min-width: 140px;
+}
+
+@media (max-width: 640px) {
+  .guest-screen-premium {
+    padding: 1rem 1rem 8rem;
+    gap: 1rem;
+  }
+
+  .guest-header {
+    flex-direction: column;
+  }
+
+  .guest-hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .claim-items-receipt {
+    padding: 1rem;
+    gap: 0.5rem;
+  }
+
+  .claim-item-row {
+    padding: 0.875rem;
+    gap: 0.75rem;
+  }
+
+  .claim-item-name-price {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .your-bill-dock {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .dock-button {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .claim-item-row {
+    animation: none;
+  }
+
+  .claim-button {
+    transition: none;
+  }
+}
