@@ -61,7 +61,7 @@ export default function Summary({
       </div>
 
       {/* Share / QR */}
-      {isHost && tab.status === "open" && (
+      {tab.status === "open" && (
         <Card elevated className="share-card">
           <div className="share-card-content">
             <div className="share-copy">
