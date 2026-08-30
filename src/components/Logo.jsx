@@ -2,7 +2,7 @@ export default function Logo() {
   return (
     <span className="logo" aria-label="splitdat">
       <span className="logo-mark" aria-hidden="true">
-        <svg viewBox="0 0 760 240" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 760 240" width="240" height="76" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <style>{`
               .wordmark { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif; font-weight: 700; letter-spacing: -1.5px; }
