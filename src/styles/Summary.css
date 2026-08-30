@@ -278,3 +278,48 @@
     animation: none;
   }
 }
+
+.host-claim-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.host-claim-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.host-claim-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--easing-in-out);
+}
+
+.host-claim-row:hover {
+  border-color: var(--blue-500);
+}
+
+.host-claim-row.claimed {
+  background: linear-gradient(135deg, var(--butter-50), var(--butter-100));
+  border-color: var(--blue-500);
+}
+
+.host-claim-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--blue-600);
+  cursor: pointer;
+}
+
+.host-claim-name {
+  flex: 1;
+  color: var(--text-primary);
+}

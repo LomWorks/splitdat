@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { getPeopleTotals, getTabTotal, getClaimedTotal, getUnclaimedTotal } from "../utils/compute.js";
-// import { setTabStatus } from "../services/tabs.js";
+import { toggleItemClaim } from "../services/tabs.js";
 import {
   Button,
   Card,
@@ -19,6 +19,7 @@ export default function Summary({
   onSettle,
 }) {
   const [settling, setSettling] = useState(false);
+  const [updatingItemId, setUpdatingItemId] = useState(null);
 
   const totals = getPeopleTotals(tab.items);
   const tabTotal = getTabTotal(tab.items);
@@ -33,6 +34,21 @@ export default function Summary({
       await onSettle();
     } finally {
       setSettling(false);
+    }
+  }
+
+  async function handleHostToggleClaim(item) {
+    if (tab.status === "settled" || updatingItemId) return;
+
+    const alreadyClaimed = item.claimedBy.includes(tab.hostName);
+
+    try {
+      setUpdatingItemId(item.id);
+      await toggleItemClaim(tab.id, item.id, tab.hostName, alreadyClaimed);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setUpdatingItemId(null);
     }
   }
 
@@ -71,6 +87,33 @@ export default function Summary({
             <TabQRCode tabId={tab.id} />
           </div>
         </Card>
+      )}
+
+      {/* Host: claim your own items */}
+      {isHost && tab.status === "open" && (
+        <div className="host-claim-section">
+          <h2>Claim your items</h2>
+          <div className="host-claim-list">
+            {tab.items.map((item) => {
+              const isClaimed = item.claimedBy.includes(tab.hostName);
+              return (
+                <label
+                  key={item.id}
+                  className={`host-claim-row ${isClaimed ? "claimed" : ""}`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isClaimed}
+                    disabled={updatingItemId === item.id}
+                    onChange={() => handleHostToggleClaim(item)}
+                  />
+                  <span className="host-claim-name">{item.name}</span>
+                  <Money amount={item.price} size="sm" />
+                </label>
+              );
+            })}
+          </div>
+        </div>
       )}
 
       {/* Total & Progress */}

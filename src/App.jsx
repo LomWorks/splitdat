@@ -104,14 +104,15 @@ screen,
 }
 
 async function handleCreateTab(data) {
-try {
-setError("");
-const tabId = await createTab(data);
-navigate(tabId, "summary");
-} catch (createError) {
-console.error(createError);
-setError("Could not create the tab. Check Firestore rules and setup.");
-}
+  try {
+    setError("");
+    const tabId = await createTab(data);
+    setGuestName(data.hostName);
+    navigate(tabId, "guest");
+  } catch (createError) {
+    console.error(createError);
+    setError("Could not create the tab. Check Firestore rules and setup.");
+  }
 }
 
 async function handleSettle() {
