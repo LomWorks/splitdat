@@ -1,10 +1,8 @@
 import { useMemo } from "react";
-import { ambientLight, directionalLight, planeGeometry, meshStandardMaterial } from "@react-three/fiber";
 import { Float, Environment } from "@react-three/drei";
 
-// TODO: swap for the real hex behind --butter-100 / --blue-600
-const PAPER_COLOR = "#f6efe2";
-const ACCENT_COLOR = "#5c7c93";
+const PAPER_COLOR = "#fff7d7"; // --butter-100
+const ACCENT_COLOR = "#5c7c93"; // --blue-600
 
 const prefersReducedMotion =
   typeof window !== "undefined" &&
@@ -18,8 +16,6 @@ function ReceiptCard({ position, tilt, scale = 1 }) {
     </mesh>
   );
 
-  // Float wraps in its own animation loop — skip it entirely for reduced motion
-  // rather than rendering it disabled.
   if (prefersReducedMotion) return card;
 
   return (
@@ -41,8 +37,8 @@ export default function ReceiptScene() {
 
   return (
     <>
-      <ambientLight args={[{ intensity: 0.5, color: PAPER_COLOR }]} />
-      <directionalLight args={[{ position: [3, 5, 4], intensity: 0.6, color: ACCENT_COLOR }]} />
+      <ambientLight intensity={0.5} color={PAPER_COLOR} />
+      <directionalLight position={[3, 5, 4]} intensity={0.6} color={ACCENT_COLOR} />
       <Environment preset="apartment" />
 
       {cards.map((card, index) => (
