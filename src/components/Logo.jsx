@@ -2,26 +2,46 @@ export default function Logo() {
 return (
 <span className="logo" aria-label="splitdat">
 <span className="logo-mark" aria-hidden="true">
-<svg viewBox="0 0 40 40" fill="none">
-<circle
-cx="20"
-cy="20"
-r="16"
-stroke="currentColor"
-strokeWidth="3"
-/>
-<path
-d="M20 4v32M20 20l11-11M20 20 9 31"
-stroke="currentColor"
-strokeWidth="3"
-strokeLinecap="round"
-/>
-<circle cx="20" cy="20" r="4" fill="currentColor" />
-</svg>
-</span>
+<svg viewBox="0 0 760 240" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .wordmark { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif; font-weight: 700; letter-spacing: -1.5px; }
+      .tagline { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif; }
+    </style>
+  </defs>
 
-<span className="logo-wordmark">
-split<strong>dat</strong>
+  <!-- ICON: a bill/coin torn into two equal shares along a jagged "split" seam -->
+  <g transform="translate(120,120)">
+    <!-- left share -->
+    <g transform="translate(-6,0)">
+      <path d="M 0,-68
+               A 68,68 0 0,0 0,68
+               L 14,37
+               L -14,16
+               L 14,-16
+               L -14,-37
+               Z"
+            fill="#48667c"/>
+    </g>
+    <!-- right share -->
+    <g transform="translate(6,0)">
+      <path d="M 0,-68
+               A 68,68 0 0,1 0,68
+               L -14,37
+               L 14,16
+               L -14,-16
+               L 14,-37
+               Z"
+            fill="#7394aa"/>
+    </g>
+  </g>
+
+  <!-- WORDMARK -->
+  <text x="228" y="140" class="wordmark" font-size="76" fill="#18232f">split<tspan fill="#5c7c93">dat</tspan></text>
+
+  <!-- tagline -->
+  <text x="230" y="172" class="tagline" font-size="18" font-weight="500" letter-spacing="2.5px" fill="#788995">EVEN SPLITS, NO DRAMA</text>
+</svg>
 </span>
 </span>
 );
