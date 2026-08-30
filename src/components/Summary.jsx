@@ -8,6 +8,7 @@ import {
   ProgressRing,
   AvatarStack,
 } from "../index.js";
+import TabQRCode from "./TabQRCode.jsx";
 import "../styles/Summary.css";
 import { useState } from "react";
 
@@ -59,6 +60,19 @@ export default function Summary({
         )}
       </div>
 
+      {/* Share / QR */}
+      {isHost && tab.status === "open" && (
+        <Card elevated className="share-card">
+          <div className="share-card-content">
+            <div className="share-copy">
+              <h3>Share this tab</h3>
+              <p>Scan to join and claim items.</p>
+            </div>
+            <TabQRCode tabId={tab.id} />
+          </div>
+        </Card>
+      )}
+
       {/* Total & Progress */}
       <Card elevated className="total-card-premium">
         <div className="total-breakdown">
@@ -102,10 +116,10 @@ export default function Summary({
           <span className="notice-icon">⚠</span>
           <div className="notice-content">
             <h3>Items not claimed yet</h3>
-            <p>
+            <span className="notice-copy">
               <Money amount={unclaimedTotal} size="sm" /> worth of items haven't been claimed.
               Someone might have forgotten!
-            </p>
+            </span>
           </div>
         </motion.div>
       )}

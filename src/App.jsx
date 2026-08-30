@@ -127,9 +127,11 @@ setError("Could not settle this tab.");
 
 return (
 <main className="app-shell">
-<Canvas camera={{ position: [0, 0, 6], fov: 40 }} dpr={[1, 2]}>
-  <ReceiptScene />
-</Canvas>
+<div className="scene-backdrop" aria-hidden="true">
+  <Canvas camera={{ position: [0, 0, 6], fov: 40 }} dpr={[1, 2]}>
+    <ReceiptScene screen={route.screen} />
+  </Canvas>
+</div>
 <header className="topbar">
 <button
 className="brand-button"
