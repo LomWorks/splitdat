@@ -19,9 +19,16 @@ export default function GuestClaim({
 }) {
   const [updatingItemId, setUpdatingItemId] = useState(null);
   const [copyToast, setCopyToast] = useState("");
+  const [hasJoined, setHasJoined] = useState(() => guestName.trim().length > 0);
 
   const normalizedName = guestName.trim();
   const yourTotal = getGuestTotal(tab.items, normalizedName);
+
+  function handleJoin(event) {
+    event.preventDefault();
+    if (!normalizedName) return;
+    setHasJoined(true);
+  }
 
   async function handleToggleClaim(item) {
     if (!normalizedName || tab.status === "settled" || updatingItemId) {
@@ -58,7 +65,7 @@ export default function GuestClaim({
     }
   }
 
-  if (!normalizedName && tab.status !== "settled") {
+  if (!hasJoined && tab.status !== "settled") {
     return (
       <div className="guest-screen-premium">
         <div className="guest-hero">
@@ -66,13 +73,11 @@ export default function GuestClaim({
             {tab.status === "settled" ? "Tab settled" : `Hosted by ${tab.hostName}`}
           </span>
           <h1>{tab.tabName}</h1>
-          <p>
-            Tap everything you ordered. Shared items split automatically.
-          </p>
+          <p>Tap everything you ordered. Shared items split automatically.</p>
         </div>
 
         <Card elevated className="name-card-premium">
-          <div className="name-card-content">
+          <form className="name-card-content" onSubmit={handleJoin}>
             <label htmlFor="guestName" className="name-card-label">
               What should we call you?
             </label>
@@ -88,10 +93,18 @@ export default function GuestClaim({
               className="name-input-premium"
             />
 
+            <button
+              type="submit"
+              className="name-submit-button"
+              disabled={!normalizedName}
+            >
+              Continue →
+            </button>
+
             <p className="helper-text">
               No account needed. Just a name for this tab.
             </p>
-          </div>
+          </form>
         </Card>
       </div>
     );
@@ -179,20 +192,12 @@ export default function GuestClaim({
               animate={{ opacity: 1, scale: 1 }}
               transition={{ type: "spring", stiffness: 200, damping: 15 }}
             >
-              <Money
-                amount={yourTotal}
-                size="xl"
-                highlight
-              />
+              <Money amount={yourTotal} size="xl" highlight />
             </motion.div>
           </div>
 
           {tab.status !== "settled" && (
-            <Button
-              onClick={onViewSummary}
-              variant="primary"
-              className="dock-button"
-            >
+            <Button onClick={onViewSummary} variant="primary" className="dock-button">
               Review split →
             </Button>
           )}

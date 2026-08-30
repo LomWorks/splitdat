@@ -257,6 +257,29 @@
   min-width: 140px;
 }
 
+.name-submit-button {
+  width: 100%;
+  padding: 0.875rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  background: var(--blue-600);
+  color: white;
+  cursor: pointer;
+  margin-bottom: 0.75rem;
+  transition: all var(--duration-base) var(--easing-in-out);
+}
+
+.name-submit-button:hover:not(:disabled) {
+  background: var(--blue-500);
+}
+
+.name-submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 @media (max-width: 640px) {
   .guest-screen-premium {
     padding: 1rem 1rem 8rem;

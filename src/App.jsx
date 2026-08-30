@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import ReceiptScene from "./components/scene/ReceiptScene.jsx";
 import Logo from "./components/Logo.jsx";
 import CreateTab from "./components/CreateTab.jsx";
 import GuestClaim from "./components/GuestClaim.jsx";
 import Summary from "./components/Summary.jsx";
 import { ensureAnonymousAuth } from "./services/firebase.js";
 import { createTab, setTabStatus, subscribeToTab } from "./services/tabs.js";
+import "./App.css";
 
 function getRoute() {
 const parts = window.location.pathname.split("/").filter(Boolean);
@@ -124,6 +127,9 @@ setError("Could not settle this tab.");
 
 return (
 <main className="app-shell">
+<Canvas camera={{ position: [0, 0, 6], fov: 40 }} dpr={[1, 2]}>
+  <ReceiptScene />
+</Canvas>
 <header className="topbar">
 <button
 className="brand-button"
