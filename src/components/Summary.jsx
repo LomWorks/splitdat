@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { getPeopleTotals, getTabTotal, getClaimedTotal, getUnclaimedTotal } from "../utils/compute.js";
-import { setTabStatus } from "../services/tabs.js";
+// import { setTabStatus } from "../services/tabs.js";
 import {
   Button,
   Card,
