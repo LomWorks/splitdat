@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import "./styles/ProgressRing.css";
+import "../styles/ProgressRing.css";
 
 export default function ProgressRing({
   total,

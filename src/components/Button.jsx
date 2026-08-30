@@ -1,4 +1,4 @@
-import { motion } from "motion";
+import { motion } from "motion/react";
 import "../styles/Button.css";
 
 export default function Button({

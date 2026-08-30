@@ -8,7 +8,7 @@ import {
   Money,
   AvatarStack,
   Toast,
-} from "./ui/index.js";
+} from "../index.js";
 import "../styles/GuestClaim.css";
 
 export default function GuestClaim({

@@ -7,7 +7,7 @@ import {
   Money,
   ProgressRing,
   AvatarStack,
-} from "./ui/index.js";
+} from "../index.js";
 import "../styles/Summary.css";
 import { useState } from "react";
 

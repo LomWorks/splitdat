@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "../styles/CreateTab.css";
 
 const currency = new Intl.NumberFormat("en-US", {
 style: "currency",

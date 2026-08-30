@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
-import "./Toast.css";
+import "../styles/Toast.css";
 
 export default function Toast({ message, type = "success", duration = 3000 }) {
   const [isVisible, setIsVisible] = useState(!!message);

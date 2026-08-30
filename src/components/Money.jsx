@@ -1,4 +1,4 @@
-import { motion } from "motion";
+import { motion } from "motion/react";
 
 const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
