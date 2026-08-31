@@ -1,23 +1,13 @@
 import { motion } from "motion/react";
 import { getPeopleTotals, getTabTotal, getClaimedTotal, getUnclaimedTotal } from "../utils/compute.js";
 import { toggleItemClaim } from "../services/tabs.js";
-import {
-  Button,
-  Card,
-  Money,
-  ProgressRing,
-  AvatarStack,
-} from "../index.js";
+import { Button, Card, Money, ProgressRing, AvatarStack } from "../index.js";
 import TabQRCode from "./TabQRCode.jsx";
+import { logEvent } from "../lib/executionLog.js";
 import "../styles/Summary.css";
 import { useState } from "react";
 
-export default function Summary({
-  tab,
-  guestName,
-  onBackToGuest,
-  onSettle,
-}) {
+export default function Summary({ tab, guestName, onBackToGuest, onSettle }) {
   const [settling, setSettling] = useState(false);
   const [updatingItemId, setUpdatingItemId] = useState(null);
 
@@ -45,6 +35,11 @@ export default function Summary({
     try {
       setUpdatingItemId(item.id);
       await toggleItemClaim(tab.id, item.id, tab.hostName, alreadyClaimed);
+      logEvent(alreadyClaimed ? "item.unclaim" : "item.claim", {
+        tabId: tab.id,
+        itemId: item.id,
+        by: "host",
+      });
     } catch (error) {
       console.error(error);
     } finally {
@@ -58,12 +53,9 @@ export default function Summary({
 
   return (
     <div className="summary-screen-premium">
-      {/* Header */}
       <div className="summary-hero">
         <div>
-          <span className="eyebrow">
-            {tab.status === "settled" ? "✓ All split" : "Almost done"}
-          </span>
+          <span className="eyebrow">{tab.status === "settled" ? "✓ All split" : "Almost done"}</span>
           <h1>{tab.tabName}</h1>
           <p>Hosted by {tab.hostName}</p>
         </div>
@@ -76,7 +68,6 @@ export default function Summary({
         )}
       </div>
 
-      {/* Share / QR */}
       {tab.status === "open" && (
         <Card elevated className="share-card">
           <div className="share-card-content">
@@ -89,7 +80,6 @@ export default function Summary({
         </Card>
       )}
 
-      {/* Host: claim your own items */}
       {isHost && tab.status === "open" && (
         <div className="host-claim-section">
           <h2>Claim your items</h2>
@@ -97,10 +87,7 @@ export default function Summary({
             {tab.items.map((item) => {
               const isClaimed = item.claimedBy.includes(tab.hostName);
               return (
-                <label
-                  key={item.id}
-                  className={`host-claim-row ${isClaimed ? "claimed" : ""}`}
-                >
+                <label key={item.id} className={`host-claim-row ${isClaimed ? "claimed" : ""}`}>
                   <input
                     type="checkbox"
                     checked={isClaimed}
@@ -116,16 +103,10 @@ export default function Summary({
         </div>
       )}
 
-      {/* Total & Progress */}
       <Card elevated className="total-card-premium">
         <div className="total-breakdown">
           <div className="progress-section">
-            <ProgressRing
-              total={tabTotal}
-              claimed={claimedTotal}
-              unclaimed={unclaimedTotal}
-              size="lg"
-            />
+            <ProgressRing total={tabTotal} claimed={claimedTotal} unclaimed={unclaimedTotal} size="lg" />
           </div>
 
           <div className="breakdown-section">
@@ -149,25 +130,19 @@ export default function Summary({
         </div>
       </Card>
 
-      {/* Unclaimed warning */}
       {unclaimedTotal > 0 && (
-        <motion.div
-          className="unclaimed-notice"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
+        <motion.div className="unclaimed-notice" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
           <span className="notice-icon">⚠</span>
           <div className="notice-content">
             <h3>Items not claimed yet</h3>
             <span className="notice-copy">
-              <Money amount={unclaimedTotal} size="sm" /> worth of items haven't been claimed.
-              Someone might have forgotten!
+              <Money amount={unclaimedTotal} size="sm" /> worth of items haven't been claimed. Someone might have
+              forgotten!
             </span>
           </div>
         </motion.div>
       )}
 
-      {/* Per-person balances */}
       <div className="balances-section">
         <h2>Who pays what</h2>
 
@@ -201,11 +176,7 @@ export default function Summary({
                         rel="noopener noreferrer"
                         className="pay-link"
                       >
-                        <Button
-                          variant="success"
-                          size="sm"
-                          className="pay-button"
-                        >
+                        <Button variant="success" size="sm" className="pay-button">
                           Pay on Venmo →
                         </Button>
                       </a>
@@ -218,36 +189,22 @@ export default function Summary({
         </div>
       </div>
 
-      {/* Host actions */}
       {isHost && tab.status === "open" && (
         <div className="host-actions">
-          <Button
-            onClick={handleSettle}
-            loading={settling}
-            variant="primary"
-            className="settle-button"
-          >
+          <Button onClick={handleSettle} loading={settling} variant="primary" className="settle-button">
             Mark as settled
           </Button>
         </div>
       )}
 
       {tab.status === "open" && !isHost && (
-        <Button
-          onClick={onBackToGuest}
-          variant="secondary"
-        >
+        <Button onClick={onBackToGuest} variant="secondary">
           Back to items
         </Button>
       )}
 
       {tab.status === "settled" && (
-        <motion.div
-          className="settled-message"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
+        <motion.div className="settled-message" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
           <h2>All split. Nice work!</h2>
           <p>Everyone paid their share. Until next time! 🎉</p>
         </motion.div>
