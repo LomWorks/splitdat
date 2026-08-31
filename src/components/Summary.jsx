@@ -19,9 +19,27 @@ export default function Summary({ tab, guestName, onBackToGuest, onSettle }) {
   const userTotal = totals.find((t) => t.name === guestName)?.amount ?? 0;
 
   async function handleSettle() {
+    const t0 = performance.now();
     try {
       setSettling(true);
       await onSettle();
+      const duration = Math.round(performance.now() - t0);
+      logEvent("tab.settle", {
+        tabId: tab.id,
+        tabName: tab.tabName,
+        totalAmount: tabTotal,
+        claimedAmount: claimedTotal,
+        unclaimedAmount: unclaimedTotal,
+        participantCount: totals.length,
+        durationMs: duration,
+      });
+    } catch (error) {
+      const duration = Math.round(performance.now() - t0);
+      logEvent("tab.settle.error", {
+        tabId: tab.id,
+        durationMs: duration,
+        message: error.message,
+      });
     } finally {
       setSettling(false);
     }
@@ -31,17 +49,31 @@ export default function Summary({ tab, guestName, onBackToGuest, onSettle }) {
     if (tab.status === "settled" || updatingItemId) return;
 
     const alreadyClaimed = item.claimedBy.includes(tab.hostName);
+    const t0 = performance.now();
 
     try {
       setUpdatingItemId(item.id);
       await toggleItemClaim(tab.id, item.id, tab.hostName, alreadyClaimed);
+      const duration = Math.round(performance.now() - t0);
       logEvent(alreadyClaimed ? "item.unclaim" : "item.claim", {
         tabId: tab.id,
         itemId: item.id,
+        itemName: item.name,
+        guestName: tab.hostName,
         by: "host",
+        sharedWith: item.claimedBy.length,
+        durationMs: duration,
       });
     } catch (error) {
+      const duration = Math.round(performance.now() - t0);
       console.error(error);
+      logEvent("item.claim.error", {
+        tabId: tab.id,
+        itemId: item.id,
+        by: "host",
+        durationMs: duration,
+        message: error.message,
+      });
     } finally {
       setUpdatingItemId(null);
     }
@@ -204,7 +236,12 @@ export default function Summary({ tab, guestName, onBackToGuest, onSettle }) {
       )}
 
       {tab.status === "settled" && (
-        <motion.div className="settled-message" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
+        <motion.div
+          className="settled-message"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
           <h2>All split. Nice work!</h2>
           <p>Everyone paid their share. Until next time! 🎉</p>
         </motion.div>

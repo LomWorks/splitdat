@@ -19,20 +19,41 @@ export default function GuestClaim({ tab, guestName, onGuestNameChange, onViewSu
     event.preventDefault();
     if (!normalizedName) return;
     setHasJoined(true);
-    logEvent("guest.join", { tabId: tab.id });
+    logEvent("guest.join", {
+      tabId: tab.id,
+      guestName: normalizedName,
+      itemCount: tab.items.length,
+    });
   }
 
   async function handleToggleClaim(item) {
     if (!normalizedName || tab.status === "settled" || updatingItemId) return;
 
     const alreadyClaimed = item.claimedBy.includes(normalizedName);
+    const t0 = performance.now();
 
     try {
       setUpdatingItemId(item.id);
       await toggleItemClaim(tab.id, item.id, normalizedName, alreadyClaimed);
-      logEvent(alreadyClaimed ? "item.unclaim" : "item.claim", { tabId: tab.id, itemId: item.id });
+      const duration = Math.round(performance.now() - t0);
+      logEvent(alreadyClaimed ? "item.unclaim" : "item.claim", {
+        tabId: tab.id,
+        itemId: item.id,
+        itemName: item.name,
+        guestName: normalizedName,
+        sharedWith: item.claimedBy.length,
+        durationMs: duration,
+      });
     } catch (error) {
+      const duration = Math.round(performance.now() - t0);
       console.error(error);
+      logEvent("item.claim.error", {
+        tabId: tab.id,
+        itemId: item.id,
+        guestName: normalizedName,
+        durationMs: duration,
+        message: error.message,
+      });
       setCopyToast("Could not update this item. Please try again.");
     } finally {
       setUpdatingItemId(null);
@@ -44,8 +65,10 @@ export default function GuestClaim({ tab, guestName, onGuestNameChange, onViewSu
     try {
       await navigator.clipboard.writeText(url);
       setCopyToast("Link copied to clipboard!");
+      logEvent("tab.link.copied", { tabId: tab.id });
     } catch (error) {
       console.error(error);
+      logEvent("tab.link.copy.error", { tabId: tab.id, message: error.message });
       setCopyToast("Could not copy link. Try manually copying from the address bar.");
     }
   }

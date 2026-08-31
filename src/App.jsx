@@ -36,10 +36,17 @@ export default function App() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    const t0 = performance.now();
     ensureAnonymousAuth()
-      .then(() => setAuthReady(true))
+      .then(() => {
+        const duration = Math.round(performance.now() - t0);
+        setAuthReady(true);
+        logEvent("auth.ready", { durationMs: duration });
+      })
       .catch((authError) => {
+        const duration = Math.round(performance.now() - t0);
         console.error(authError);
+        logEvent("auth.error", { durationMs: duration, message: authError.message });
         setError("Could not start a secure session. Check Firebase Auth.");
       });
   }, []);
@@ -54,18 +61,34 @@ export default function App() {
     setLoading(true);
     setError("");
 
+    const t0 = performance.now();
+    let firstEmit = true;
+
     return subscribeToTab(
       route.tabId,
       (nextTab) => {
+        if (firstEmit) {
+          const duration = Math.round(performance.now() - t0);
+          logEvent("tab.subscribe.ready", { tabId: route.tabId, durationMs: duration });
+          firstEmit = false;
+        }
+
         setTab(nextTab);
         setLoading(false);
 
         if (!nextTab) {
           setError("This tab could not be found.");
+          logEvent("tab.not.found", { tabId: route.tabId });
         }
       },
       (firestoreError) => {
+        const duration = Math.round(performance.now() - t0);
         console.error(firestoreError);
+        logEvent("tab.subscribe.error", {
+          tabId: route.tabId,
+          durationMs: duration,
+          message: firestoreError.message,
+        });
         setLoading(false);
         setError("Could not connect to the live tab.");
       },
@@ -74,7 +97,6 @@ export default function App() {
 
   useEffect(() => {
     if (!route.tabId) return;
-
     localStorage.setItem(`splitdat-guest-${route.tabId}`, guestName);
   }, [guestName, route.tabId]);
 
@@ -84,10 +106,7 @@ export default function App() {
     }
 
     window.addEventListener("popstate", handlePopState);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
+    return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
   function navigate(tabId, screen = "guest") {
@@ -106,14 +125,26 @@ export default function App() {
   }
 
   async function handleCreateTab(data) {
+    const t0 = performance.now();
     try {
       setError("");
       const tabId = await createTab(data);
-      logEvent("tab.create", { tabId, hostName: data.hostName, itemCount: data.items.length });
+      const duration = Math.round(performance.now() - t0);
+      logEvent("tab.create", {
+        tabId,
+        hostName: data.hostName,
+        itemCount: data.items.length,
+        durationMs: duration,
+      });
       setGuestName(data.hostName);
       navigate(tabId, "guest");
     } catch (createError) {
+      const duration = Math.round(performance.now() - t0);
       console.error(createError);
+      logEvent("tab.create.error", {
+        durationMs: duration,
+        message: createError.message,
+      });
       setError("Could not create the tab. Check Firestore rules and setup.");
     }
   }
@@ -121,11 +152,19 @@ export default function App() {
   async function handleSettle() {
     if (!tab) return;
 
+    const t0 = performance.now();
     try {
       await setTabStatus(tab.id, "settled");
-      logEvent("tab.settle", { tabId: tab.id });
+      const duration = Math.round(performance.now() - t0);
+      logEvent("tab.settle", { tabId: tab.id, durationMs: duration });
     } catch (settleError) {
+      const duration = Math.round(performance.now() - t0);
       console.error(settleError);
+      logEvent("tab.settle.error", {
+        tabId: tab.id,
+        durationMs: duration,
+        message: settleError.message,
+      });
       setError("Could not settle this tab.");
     }
   }
@@ -138,6 +177,7 @@ export default function App() {
           <PerformanceMonitor onSample={(stats) => logEvent("perf.sample", stats)} />
         </Canvas>
       </div>
+
       <header className="topbar">
         <button
           className="brand-button"
@@ -165,6 +205,16 @@ export default function App() {
             >
               Summary
             </button>
+
+            {import.meta.env.DEV && (
+              <button
+                className="text-button"
+                type="button"
+                onClick={() => window.splitdatLog.exportExecutionLog()}
+              >
+                Export log
+              </button>
+            )}
           </div>
         )}
       </header>
