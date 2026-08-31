@@ -11,6 +11,9 @@
  *   logEvent("tab.create", { tabId, hostName, itemCount: items.length });
  *   ...
  *   exportExecutionLog(); // triggers a JSON file download
+ *
+ * Also exposed on window.splitdatLog so it's reachable from the console in
+ * any build mode (dev or production) without needing to know the source path.
  */
 
 const STORAGE_KEY = "splitdat-execution-log";
@@ -34,6 +37,10 @@ function writeLog(entries) {
 }
 
 let memoryLog = readLog();
+
+if (typeof window !== "undefined") {
+  window.splitdatLog = { logEvent, getExecutionLog, exportExecutionLog, clearExecutionLog };
+}
 
 export function logEvent(type, context = {}) {
   const entry = {
